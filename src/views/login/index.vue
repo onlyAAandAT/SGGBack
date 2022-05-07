@@ -71,6 +71,7 @@ import { validUsername } from "@/utils/validate";
 export default {
   name: "Login",
   data() {
+    // 自定义表单验证规则
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
         callback(new Error("Please enter the correct user name"));
@@ -207,8 +208,18 @@ $light_gray: #eee;
 .login-container {
   min-height: 100%;
   width: 100%;
-  background: url(~@/assets/LoginBackground.jpg);
+  background: url(~@/assets/LoginBackground.jpg) no-repeat;
   background-size: 100% 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /*关键*/
+  background-position: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -10;
+  zoom: 1;
   overflow: hidden;
 
   .login-form {

@@ -34,7 +34,12 @@ Vue.use(ElementUI, { locale })
 // Vue.use(ElementUI)
 
 Vue.config.productionTip = false
-
+// 引入相关API请求接口
+import API from '@/api/index';
+// 挂载到Vue原型上，任意组件都可通过$API使用API
+import CategorySelect from "@/components/CategorySelect"
+Vue.component(CategorySelect.name,CategorySelect)
+Vue.prototype.$API = API;
 new Vue({
   el: '#app',
   router,
