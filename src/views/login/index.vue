@@ -73,18 +73,18 @@ export default {
   data() {
     // 自定义表单验证规则
     const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error("Please enter the correct user name"));
-      } else {
+      // if (!validUsername(value)) {
+        // callback(new Error("Please enter the correct user name"));
+      // } else {
         callback();
-      }
+      // }
     };
     const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error("The password can not be less than 6 digits"));
-      } else {
+      // if (value.length < 6) {
+        // callback(new Error("The password can not be less than 6 digits"));
+      // } else {
         callback();
-      }
+      // }
     };
     return {
       loginForm: {

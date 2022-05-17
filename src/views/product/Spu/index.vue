@@ -31,7 +31,8 @@
                 type="success"
                 icon="el-icon-plus"
                 size="mini"
-                title="添加spu"
+                title="添加sku"
+                @click="addSku(row)"
               ></hint-button>
               <hint-button
                 @click="updateSpu(row)"
@@ -45,9 +46,13 @@
                 icon="el-icon-info"
                 size="mini"
                 title="查看当前spu全部sku列表"
+                @click="handler(row)"
               ></hint-button>
               <!-- 气泡确认框 -->
-              <el-popconfirm title="这是一段内容确定删除吗？" @onConfirm="deleteSpu(row)">
+              <el-popconfirm
+                title="这是一段内容确定删除吗？"
+                @onConfirm="deleteSpu(row)"
+              >
                 <hint-button
                   type="danger"
                   icon="el-icon-delete"
@@ -77,8 +82,40 @@
         @changeScene="changeScene"
         ref="spu"
       ></SpuForm>
-      <SkuForm v-show="scene == 2"></SkuForm>
+      <SkuForm
+        v-show="scene == 2"
+        @changeScenes="changeScenes"
+        ref="sku"
+      ></SkuForm>
     </el-card>
+    <el-dialog
+      :title="`${spu.spuName}的Sku列表`"
+      :visible.sync="dialogTableVisible"
+      :before-close="close"
+    >
+      <el-table :data="skuList" style="width: 100%" border v-loading="loading">
+        <el-table-column
+          prop="skuName"
+          label="名称"
+          width="150"
+        ></el-table-column>
+        <el-table-column
+          prop="price"
+          label="价格"
+          width="200"
+        ></el-table-column>
+        <el-table-column
+          prop="weight"
+          label="重量"
+          width="200"
+        ></el-table-column>
+        <el-table-column prop="prop" label="默认图片">
+          <template slot-scope="{ row, $index }">
+            <img :src="row.skuDefaultImg" style="width: 100px; height: 100px" />
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
@@ -100,6 +137,12 @@ export default {
       limit: 3,
       records: [],
       total: 0, // 分页器一共需要展示数据的条数
+      // 控制对话框的显示与隐藏
+      dialogTableVisible: false,
+      spu: {},
+      skuList: [],
+      // 加载效果
+      loading: true,
     };
   },
   methods: {
@@ -148,7 +191,7 @@ export default {
       // ref获取子组件上的方法
       this.$refs.spu.initSpuData(row);
     },
-    // 自定义事件改变场景回调,flag判断保存还是修改操作
+    // 自定义事件改变场景SPU回调,flag判断保存还是修改操作
     changeScene({ scene, flag }) {
       this.scene = scene;
       if (flag == "修改") {
@@ -161,12 +204,44 @@ export default {
     // 删除SPU按钮
     async deleteSpu(row) {
       let result = await this.$API.spu.reqDeleteSpu(row.id);
-      if(result.code == 200){
-        this.$message({type:"success",message:"删除Spu成功"})
-      }else{
-        this.$message("删除Spu失败")
+      if (result.code == 200) {
+        this.$message({ type: "success", message: "删除Spu成功" });
+      } else {
+        this.$message("删除Spu失败");
       }
-      this.getSpuList(this.records.length>1?this.page:this.page-1);
+      this.getSpuList(this.records.length > 1 ? this.page : this.page - 1);
+    },
+    // 添加Sku
+    addSku(row) {
+      this.scene = 2;
+      // 打上ref后，可以在父组件调用子组件的方法
+      this.$refs.sku.getData(this.category1Id, this.category2Id, row);
+    },
+    // skufrom通知父组件修改场景
+    changeScenes(scene) {
+      this.scene = scene;
+    },
+    // 查看sku的按钮回调
+    async handler(spu) {
+      this.dialogTableVisible = true;
+      // 保存spu信息
+      this.spu = spu;
+      // 获取sku列表的数据进行展示
+      let result = await this.$API.spu.reqSkuList(spu.id);
+      if (result.code == 200) {
+        this.skuList = result.data;
+
+        // loading隐藏
+        this.loading = false;
+      }
+    },
+    // 关闭对话框回调
+    close(done) {
+      this.loading = true;
+      // 清除数据
+      this.skuList = [];
+      // 关闭对话框
+      done();
     },
   },
 };

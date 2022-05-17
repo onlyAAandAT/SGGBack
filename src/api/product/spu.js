@@ -36,3 +36,26 @@ export const reqAddOrUpdateSpu = (spuInfo) => {
 // 删除SPU
 // /admin/product/deleteSpu/{spuId} delete
 export const reqDeleteSpu = (spuId) => request({ url: `/admin/product/deleteSpu/${spuId}`, method: 'delete' })
+
+
+// 进入sku模块即获取数据
+
+// // 获取图片
+// // /admin/product/spuImageList/{spuId} get
+// export const reqSpuImageList = (spuId) => request({ url: `/admin/product/spuImageList/${spuId}`, method: 'get' });
+
+// 获取销售属性
+// /admin/product/spuSaleAttrList/{spuId} get
+export const reqSpuSaleAttrList = (spuId) => request({ url: `/admin/product/spuSaleAttrList/${spuId}`, method: 'get' });
+
+// 获取平台属性的数据
+// /admin/product/attrInfoList/{category1Id}/{category2Id}/{category3Id} get
+export const reqAttrInfoList = (category1Id, category2Id, category3Id) => request({ url: `/admin/product/attrInfoList/${category1Id}/${category2Id}/${category3Id}`, method: 'get' })
+
+// 添加sku
+// /admin/product/saveSkuInfo post
+export const reqAddSku = (skuInfo) => request({ url: '/admin/product/saveSkuInfo', method: 'post', data:skuInfo })
+
+// 获取sku列表数据的接口
+// /admin/product/findBySpuId/{spuId}
+export const reqSkuList = (spuId)=>request({url:`/admin/product/findBySpuId/${spuId}`,methodL:'get'});

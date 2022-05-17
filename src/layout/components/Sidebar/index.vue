@@ -12,6 +12,7 @@
         :collapse-transition="false"
         mode="vertical"
       >
+      <!-- 遍历了计算出来的routes -->
         <sidebar-item v-for="route in routes" :key="route.path" :item="route" :base-path="route.path" />
       </el-menu>
     </el-scrollbar>
@@ -30,8 +31,10 @@ export default {
     ...mapGetters([
       'sidebar'
     ]),
+    // 不是来自仓库的路由信息，而是来自router中的常量路由
     routes() {
-      return this.$router.options.routes
+      // sliderbar：需要遍历仓库中计算完毕的路由
+      return this.$store.state.user.resultAllRoutes
     },
     activeMenu() {
       const route = this.$route

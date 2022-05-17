@@ -30,6 +30,10 @@ import Layout from '@/layout'
  * a base page that does not have permission requirements
  * all roles can be accessed
  */
+
+// 需要把路由进行拆分
+// 常量路由：全部用户都有权限进入
+
 export const constantRoutes = [
   // 登录路由
   {
@@ -56,38 +60,133 @@ export const constantRoutes = [
       meta: { title: '首页', icon: 'dashboard' }
     }]
   },
+
+]
+
+// 异步路由：不同角色需要过滤筛选出的路由
+export const asyncRoutes = [
   {
-    path:'/product',
-    component:Layout,
-    name:'Product',
-    meta:{title:'商品管理',icon:'el-icon-goods'},
-    children:[
+    path: '/',
+    component: Layout,
+    redirect: '/dashboard',
+    children: [{
+      path: 'dashboard',
+      name: 'Dashboard',
+      component: () => import('@/views/dashboard/index'),
+      // 路由元数据 设置侧边栏文字
+      meta: { title: '首页', icon: 'dashboard' }
+    }]
+  },
+  {
+    path: '/product',
+    component: Layout,
+    name: 'Product',
+    meta: { title: '商品管理', icon: 'el-icon-goods' },
+    children: [
       {
-        path:'trademark',
-        name:'TradeMark',
-        component:()=>import('@/views/product/tradeMark'),
-        meta:{title:'品牌管理'}
+        path: 'trademark',
+        name: 'TradeMark',
+        component: () => import('@/views/product/tradeMark'),
+        meta: { title: '品牌管理' }
       },
       {
-        path:'attr',
-        name:'Attr',
-        component:()=>import('@/views/product/Attr'),
-        meta:{title:'平台属性管理'}
+        path: 'attr',
+        name: 'Attr',
+        component: () => import('@/views/product/Attr'),
+        meta: { title: '平台属性管理' }
       },
       {
-        path:'spu',
-        name:'Spu',
-        component:()=>import('@/views/product/Spu'),
-        meta:{title:'Spu'}
+        path: 'spu',
+        name: 'Spu',
+        component: () => import('@/views/product/Spu'),
+        meta: { title: 'Spu' }
       },
       {
-        path:'sku',
-        name:'Sku',
-        component:()=>import('@/views/product/Sku'),
-        meta:{title:'Sku'}
+        path: 'sku',
+        name: 'Sku',
+        component: () => import('@/views/product/Sku'),
+        meta: { title: 'Sku' }
       }
     ]
   },
+  {
+    name: 'Acl',
+    path: '/acl',
+    component: Layout,
+    meta: {
+      title: '权限管理',
+      icon: 'el-icon-lock'
+    },
+    children: [
+      {
+        name: 'User',
+        path: 'user/list',
+        component: () => import('@/views/acl/user/list'),
+        meta: {
+          title: '用户管理',
+        },
+      },
+      {
+        name: 'Role',
+        path: 'role/list',
+        component: () => import('@/views/acl/role/list'),
+        meta: {
+          title: '角色管理',
+        },
+      },
+      {
+        name: 'RoleAuth',
+        path: 'role/auth/:id',
+        component: () => import('@/views/acl/role/roleAuth'),
+        meta: {
+          activeMenu: '/acl/role/list',
+          title: '角色授权',
+        },
+        hidden: true,
+      },
+      {
+        name: 'Permission',
+        path: 'permission/list',
+        component: () => import('@/views/acl/permission/list'),
+        meta: {
+          title: '菜单管理',
+        },
+      },
+    ]
+  },
+  // 权限测试
+  {
+    name: 'Test',
+    path: '/test',
+    component: Layout,
+    meta: {
+      title: '测试管理权限',
+      icon: 'el-icon-lock'
+    },
+    children: [
+      {
+        name: 'Test1',
+        path: 'test1',
+        component: () => import('@/views/Test/Test1'),
+        meta: {
+          title: 'Test1测试',
+        },
+      },
+      {
+        name: 'Test2',
+        path: 'test2',
+        component: () => import('@/views/Test/Test2'),
+        meta: {
+          title: 'Test2测试',
+        },
+      },
+      
+    ]
+  }
+]
+
+// 任意路由：其他的路由(路径错误)
+export const anyRoutes = [
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
